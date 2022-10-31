@@ -1,101 +1,223 @@
-//Primera pre entrega
-//ingreso con usuario y contraseña a la página.
-let savedUsu = "Lali Protto";
-let savedContra = "Lali_1506";
 
-function login () {
-    let ingresar = false;
+const usuarios = [
+    {
+        nombre: "Laura",
+        mail: "lauraj.protto@gmail.com",
+        password: "Lali_1506"
+    },
 
-    for (let i=2; i>=0; i--){
-        let userName = prompt("Ingresa tu nombre de usuario. Tienes "+(i+1)+" intentos");
-        let contrasenia = prompt("Ingresa tu contraseña. Tienes "+(i+1)+" intentos");
-        if ((userName === savedUsu) && (contrasenia === savedContra)){
-            alert("Bienvenido/a El almacen de Libros, ya podes comenzar a comprar !");
-            ingresar = true;
-        break;
-        }else{ 
-            alert("Error. Te quedan "+i+" intentos")
-        
-        }
-    }
-    return ingresar;
+    {
+        nombre: "Miguel",
+        mail: "miguel.juarez@gmail.com",
+        password: "Miguel1990"
+    },
 
-    }
-    
+    {
+        nombre: "Gabriel",
+        mail: "gabriel.1989@gmail.com",
+        password: "Migue1602"
+    },
+]
 
-// Selección de producto
-class Libro {
-    constructor(titulo, autor, precio) {
-        this.titulo  = titulo.toUpperCase();
-        this.autor = autor;
-        this.precio  = parseFloat(precio);
-        this.vendido = false;
-    
-    }
-}
-//Declaramos un array de productos para almacenar objetos
 const libros = [
-    new Libro ("Harry Potter y la piedra filosofal", "J. K. Rowling", "3800"),
-    new Libro ("Harry Potter y la cámara secreta", "J. K. Rowling", "2800"),
-    new Libro ("Harry Potter y el prisionero de Azkaban", "J. K. Rowling", "2500"),
-    new Libro ("Harry Potter y el cáliz de fuego", "J. K. Rowling", "2600"),
-    new Libro ("Harry Potter y la orden del fénix", "J. K. Rowling", "2800"),
-    new Libro ("Harry Potter y el misterio del príncipe", "J. K. Rowling", "2700"),
-    new Libro ("Harry Potter y las reliquias de la muerte", "J. K. Rowling", "3800"),
-    new Libro ("La Comunidad del anillo", "J. R. R. Tolkien", "3800"),
-    new Libro ("Las dos Torres", "J. R. R. Tolkien", "2600"),
-    new Libro ("El retorno del Rey", "J. R. R. Tolkien", "2800"),
+    {
+        titulo: "Harry Potter y la piedra filosofal",
+        autor: "J. K. Rowling",
+        precio : "3800",
+        img: "imagenenes/HP1.jpg"
+    },
 
-];
+    {
+        titulo: "Harry Potter y la cámara secreta",
+        autor: "J. K. Rowling",
+        precio: "2800",
+        img: "imagenenes/HP2.jpg"
+    },
 
-if (login()){
-    let metodoBusqueda = prompt("Elegi el método de busqueda:\n1 - Títulos de la A-Z \n2 - Títulos de la Z-A \n3 - Mayor precio \n4 - Menor precio")
-;    
-function organizar (metodoBusqueda,libros){
-        let librosOrdenados = libros.slice(0);
+    {
+        titulo: "Harry Potter y el prisionero de Azkaban",
+        autor: "J. K. Rowling",
+        precio: "2500",
+        img: "imagenenes/HP3.jpg"
+    },
 
-        switch(metodoBusqueda){
-            case "1":
-                let nombreAscendente = librosOrdenados.sort((a,b)=>a.titulo.localeCompare(b.titulo));
-                return nombreAscendente;
+    {
+        titulo: "Harry Potter y el cáliz de fuego",
+        autor: "J. K. Rowling",
+        precio: "2600",
+        img: "imagenenes/HP4.jpg"
+    },
 
-            case "2":
-                let nombreDescendente = librosOrdenados.sort((b,a)=>b.titulo.localeCompare(a.titulo));
-                return nombreDescendente;
+    {
+        titulo: "Harry Potter y la orden del fénix",
+        autor: "J. K. Rowling",
+        precio: "2800",
+        img: "imagenenes/HP5.jpg"
+    },
 
-            case "3":
-                return librosOrdenados.sort((a,b)=>a.precio - b.precio);
-             
+    {
+        titulo: "Harry Potter y el misterio del príncipe",
+        autor: "J. K. Rowling",
+        precio: "2700",
+        img: "imagenenes/HP6.jpg"
+    },
 
-            case "4":
-                return librosOrdenados.sort((b,a)=>b.precio - a.precio);
-                
+    {
+        titulo: "Harry Potter y las reliquias de la muerte",
+        autor: "J. K. Rowling",
+        precio: "3800",
+        img: "imagenenes/HP7.jpg"
+    },
 
-            default:
-                alert("Opción inválida");
-                break;
+    {
+        titulo: "El Señor de los Anillos - La Comunidad del anillo",
+        autor: "J. R. R. Tolkien",
+        precio: "3800",
+        img: "imagenenes/senior1.jpg"
+    },
+
+    {
+        titulo: "El Señor de los Anillos - Las dos Torres",
+        autor: "J. R. R. Tolkien",
+        precio: "3800",
+        img: "imagenenes/senior2.jpg"
+        
+    },
+
+    {
+        titulo: "El Señor de los Anillos - El retorno del Rey",
+        autor: "J. R. R. Tolkien",
+        precio: "2800",
+        img: "imagenenes/senior3.jpg"
+    },
+
+
+]
+
+//Elementos del DOM
+
+const mailLogin = document.getElementById('emailLogin'),
+    passLogin = document.getElementById('passwordLogin'),
+    recordar = document.getElementById('recordarme'),
+    btnLogin = document.getElementById('login'),
+    modalEl = document.getElementById('modalLogin'),
+    modal = new bootstrap.Modal(modalEl),
+    contTarjetas = document.getElementById('tarjetas'),
+    toggles = document.querySelectorAll('.toggles');
+
+//validar usuario y contraseña
+
+function validarUsuario(usersDB, user, pass) {
+    let encontrado = usersDB.find((userDB) => userDB.mail == user);
+
+
+    if (typeof encontrado === 'undefined') {
+        return false;
+    } else {
+        //si estoy en este punto, quiere decir que el mail existe, sólo queda comparar la contraseña
+        if (encontrado.pass != pass) {
+            return false;
+        } else {
+            return encontrado;
         }
     }
-    function crearStringFinal(libros){
-        let datos ="";
+}
 
-        libros.forEach(libros => {
-            datos += "Titulo: "+ libros.titulo + "\nAutor: " + libros.autor + "\nPrecio: " + libros.precio
-        });
-        
-        return datos;
+//Función de guardar datos en el Storage
+
+function guardarDatos(usuarioDB, storage) {
+    const usuario = {
+        'name': usuarioDB.nombre,
+        'user': usuarioDB.mail,
+        'pass': usuarioDB.pass
     }
 
-    alert(crearStringFinal(organizar(metodoBusqueda, libros)))
-
-
-let autorElegido = prompt ("Escribí el nombre del autor del libro que queres")
-const filtrado = libros.filter((libro) => libro.autor.includes(autorElegido))
-if (filtrado.length == 0){
-    alert("No tenemos stock disponible al momento, consulta más adelante");
-}else{
-    const imprimible = filtrado.map((libro) => libro.titulo);
-    alert("Los libros que tenemos disponible según tu autor elegido son: " + imprimible.join("\n"))
+    storage.setItem('usuario', JSON.stringify(usuario));
 }
 
+//Cambiar DOM para que salude a quien se Loguea
+function saludar(usuario) {
+    nombreUsuario.innerHTML = `Bienvenido/a, <span>${usuario.name}</span>`
 }
+
+
+//Limpiar el Storage
+
+function borrarDatos() {
+    localStorage.clear();
+    sessionStorage.clear();
+}
+
+function recuperarUsuario(storage) {
+    let usuarioEnStorage = JSON.parse(storage.getItem('usuario'));
+    return usuarioEnStorage;
+}
+
+//Función que revisa el storage
+function estaLogueado(usuario) {
+
+    if (usuario) {
+        saludar(usuario);
+        mostrarInfoMascota(mascotas);
+        presentarInfo(toggles, 'd-none');
+    }
+}
+
+function presentarInfo(array, clase) {
+    array.forEach(element => {
+        element.classList.toggle(clase);
+    });
+}
+
+function mostrarinfoLibro(array) {
+    contTarjetas.innerHTML = " ";
+    array.forEach(element => {
+        let html = `<div class="card cardLibro" id="tarjeta${element.titulo}">
+            <h3 class="card-header" id="tituloLibro">Nombre: ${element.titulo}</h3>
+            <img src="${element.img}" alt="${element.titulo}" class="card-img-bottom" id="fotoLibro">
+            <div class="card-body">
+                <p class="card-text" id="autorLibro">Autor: ${element.autor}</p>
+                <p class="card-text" id="autorLibro">Precio: ${element.precio} Pesos</p>
+            </div>
+        </div>`;
+        contTarjetas.innerHTML += html
+    });
+}
+
+btnLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+
+
+    if(!mailLogin.value||!passLogin.value){
+        alert("Todos los campos son requeridos")
+    } else{
+        let data = validarUsuario(usuarios, mailLogin.value, passLogin.value);
+
+        if (!data) {
+            alert(`Usuario y/o contraseña erróneos`);
+        } else {
+
+            //Revisamos si elige persistir la info aunque se cierre el navegador o no
+            if (recordar.checked) {
+                guardarDatos(data, localStorage);
+                saludar(recuperarUsuario(localStorage));
+            } else {
+                guardarDatos(data, sessionStorage);
+                saludar(recuperarUsuario(sessionStorage));
+            }
+
+            modal.hide();
+            mostrarinfoLibro(libros);
+            presentarInfo(toggles, "d-none");
+        }
+    }
+})
+
+btnLogout.addEventListener('click', () => {
+    borrarDatos();
+    presentarInfo(toggles, 'd-none');
+});
+
+window.onload = () => estaLogueado(recuperarUsuario(localStorage)); 
+
+

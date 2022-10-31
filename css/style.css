@@ -1,0 +1,14 @@
+.cardLibro{
+    width:500px;
+}
+
+.fakeAncla{
+    text-decoration: underline;
+    color: #C0C0C0;
+}
+
+.loginBar{
+    background-color: #FFFAAE;
+    padding: 20px;
+    margin-bottom: 20px;
+}
